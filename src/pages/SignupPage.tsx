@@ -1,21 +1,18 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { MapPin, UserPlus, AlertCircle, CheckCircle2, Mail } from 'lucide-react';
+import { MapPin, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function SignupPage() {
   const { user, signUp } = useAuth();
-  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [needsConfirmation, setNeedsConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const redirect = sessionStorage.getItem('postAuthRedirect');
-  if (user) return <Navigate to={redirect || '/dashboard'} replace />;
+  if (user) return <Navigate to="/dashboard" replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +31,7 @@ export default function SignupPage() {
       setLoading(false);
     } else {
       setSuccess(true);
-      setNeedsConfirmation(result.needsConfirmation);
       setLoading(false);
-      if (!result.needsConfirmation) {
-        const savedRedirect = sessionStorage.getItem('postAuthRedirect');
-        if (savedRedirect) {
-          sessionStorage.removeItem('postAuthRedirect');
-          navigate(savedRedirect);
-        }
-      }
     }
   };
 
@@ -52,30 +41,14 @@ export default function SignupPage() {
         <div className="w-full max-w-md px-4 text-center">
           <div className="bg-white rounded-2xl shadow-lg border border-sand-200 p-8">
             <div className="w-16 h-16 bg-eucalyptus-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              {needsConfirmation ? (
-                <Mail className="w-8 h-8 text-eucalyptus-600" />
-              ) : (
-                <CheckCircle2 className="w-8 h-8 text-eucalyptus-600" />
-              )}
+              <CheckCircle2 className="w-8 h-8 text-eucalyptus-600" />
             </div>
-            {needsConfirmation ? (
-              <>
-                <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Check Your Email</h2>
-                <p className="text-sand-600 mb-4">We've sent a confirmation link to <strong className="text-sand-800">{email}</strong>.</p>
-                <p className="text-sm text-sand-500 mb-6">Click the link in the email to verify your account. Check your spam folder if you don't see it.</p>
-                <Link to="/login" className="btn-primary">
-                  Continue to Login
-                </Link>
-              </>
-            ) : (
-              <>
-                <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Account Created!</h2>
-                <p className="text-sand-600 mb-6">You're all set. Start exploring our services and book your first session.</p>
-                <Link to="/dashboard" className="btn-primary">
-                  Go to Dashboard
-                </Link>
-              </>
-            )}
+            <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Account Created!</h2>
+            <p className="text-sand-600 mb-4">We've sent a confirmation link to <strong className="text-sand-800">{email}</strong>.</p>
+            <p className="text-sm text-sand-500 mb-6">Click the link in the email to verify your account, then log in with your credentials.</p>
+            <Link to="/login" className="btn-primary">
+              Go to Login
+            </Link>
           </div>
         </div>
       </div>

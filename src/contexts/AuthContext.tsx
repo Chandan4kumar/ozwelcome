@@ -67,9 +67,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })();
     }
 
-    // Check if email confirmation is required
-    const needsConfirmation = !error && !data.session;
-    return { error: error?.message ?? null, needsConfirmation };
+    // Prevent auto-login after signup by signing out immediately
+    if (!error && data.session) {
+      await supabase.auth.signOut();
+    }
+
+    return { error: error?.message ?? null, needsConfirmation: true };
   };
 
   const signIn = async (email: string, password: string) => {
