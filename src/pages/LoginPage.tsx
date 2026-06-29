@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { MapPin, LogIn, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, signIn } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to="/dashboard" replace />;
+  const redirect = sessionStorage.getItem('postAuthRedirect');
+  if (user) return <Navigate to={redirect || '/dashboard'} replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +23,12 @@ export default function LoginPage() {
     if (error) {
       setError(error);
       setLoading(false);
+    } else {
+      const savedRedirect = sessionStorage.getItem('postAuthRedirect');
+      if (savedRedirect) {
+        sessionStorage.removeItem('postAuthRedirect');
+        navigate(savedRedirect);
+      }
     }
   };
 

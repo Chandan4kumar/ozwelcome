@@ -51,6 +51,16 @@ export default function AuthCallbackPage() {
     handleCallback();
   }, [navigate]);
 
+  const handleContinue = () => {
+    const saved = sessionStorage.getItem('postAuthRedirect');
+    if (saved) {
+      sessionStorage.removeItem('postAuthRedirect');
+      navigate(saved);
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <div className="pt-16 min-h-screen bg-gradient-to-br from-sand-50 to-white flex items-center justify-center py-12">
       <div className="w-full max-w-md px-4 text-center">
@@ -80,10 +90,10 @@ export default function AuthCallbackPage() {
               <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Email Confirmed!</h2>
               <p className="text-sand-600 mb-6">{message}</p>
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={handleContinue}
                 className="btn-primary"
               >
-                Go to Dashboard
+                Continue
               </button>
             </>
           )}

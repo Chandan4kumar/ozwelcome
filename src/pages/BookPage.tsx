@@ -331,6 +331,8 @@ export default function BookPage() {
   }
 
   if (!user) {
+    const currentPath = `/book/${serviceId}`;
+    sessionStorage.setItem('postAuthRedirect', currentPath);
     return (
       <div className="pt-16 min-h-screen bg-gradient-to-br from-sand-50 to-white flex items-center justify-center py-12">
         <div className="w-full max-w-md px-4 text-center">
