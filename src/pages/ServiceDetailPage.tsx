@@ -1,5 +1,6 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 import { Phone, FileText, Mic, ArrowRight, CheckCircle2, Clock, Shield, Star } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const SERVICE_DATA: Record<string, {
   icon: typeof Phone;
@@ -117,6 +118,8 @@ const SERVICE_DATA: Record<string, {
 
 export default function ServiceDetailPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const service = serviceId ? SERVICE_DATA[serviceId] : undefined;
 
   if (!service) {
@@ -124,6 +127,16 @@ export default function ServiceDetailPage() {
   }
 
   const Icon = service.icon;
+
+  const handleBookNow = () => {
+    const destination = `/book/${serviceId}`;
+    if (user) {
+      navigate(destination);
+    } else {
+      sessionStorage.setItem('postAuthRedirect', destination);
+      navigate('/login');
+    }
+  };
 
   return (
     <div className="pt-16">
@@ -193,12 +206,12 @@ export default function ServiceDetailPage() {
                       </div>
                     ))}
                   </div>
-                  <Link
-                    to={`/book/${serviceId}`}
+                  <button
+                    onClick={handleBookNow}
                     className="btn-primary w-full mt-6 text-center"
                   >
                     Book Now <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
+                  </button>
                 </div>
 
                 {/* Credentials */}

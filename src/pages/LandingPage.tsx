@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import {
   Phone, FileText, Mic, ChevronRight, ChevronLeft,
   Briefcase, MessageSquare, FileCheck, DollarSign, Home,
@@ -124,8 +123,6 @@ const FAQS = [
 ];
 
 export default function LandingPage() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -138,16 +135,6 @@ export default function LandingPage() {
 
   const nextSlide = () => setCurrentSlide(prev => (prev + 1) % HERO_IMAGES.length);
   const prevSlide = () => setCurrentSlide(prev => (prev - 1 + HERO_IMAGES.length) % HERO_IMAGES.length);
-
-  const handleBookConsultation = () => {
-    const destination = '/book/ask-an-aussie';
-    if (user) {
-      navigate(destination);
-    } else {
-      sessionStorage.setItem('postAuthRedirect', destination);
-      navigate('/login');
-    }
-  };
 
   return (
     <div className="overflow-hidden">
@@ -190,12 +177,9 @@ export default function LandingPage() {
               <Link to="/services" className="btn-primary text-lg px-8 py-4">
                 Explore Services <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
-              <button
-                onClick={handleBookConsultation}
-                className="btn-outline border-white text-white hover:bg-white/10 text-lg px-8 py-4"
-              >
+              <Link to="/services/ask-an-aussie" className="btn-outline border-white text-white hover:bg-white/10 text-lg px-8 py-4">
                 Book a Consultation
-              </button>
+              </Link>
             </div>
           </div>
         </div>
