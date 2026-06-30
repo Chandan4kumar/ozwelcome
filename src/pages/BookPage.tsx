@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useBookings } from '../hooks/useBookings';
 import { supabase } from '../lib/supabase';
@@ -75,6 +75,7 @@ function getNextWeekdays(): Date[] {
 export default function BookPage() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { createBooking } = useBookings();
   const service = serviceId ? SERVICE_CONFIG[serviceId] : undefined;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -333,21 +334,8 @@ export default function BookPage() {
   if (!user) {
     const currentPath = `/book/${serviceId}`;
     sessionStorage.setItem('postAuthRedirect', currentPath);
-    return (
-      <div className="pt-16 min-h-screen bg-gradient-to-br from-sand-50 to-white flex items-center justify-center py-12">
-        <div className="w-full max-w-md px-4 text-center">
-          <div className="bg-white rounded-2xl shadow-lg border border-sand-200 p-8">
-            <Icon className="w-12 h-12 text-ochre-500 mx-auto mb-4" />
-            <h2 className="font-display text-2xl font-bold text-sand-900 mb-3">Sign In to Book</h2>
-            <p className="text-sand-600 mb-6">Create an account or sign in to book your {service.title} session.</p>
-            <div className="flex gap-4 justify-center">
-              <Link to="/signup" className="btn-primary">Create Account</Link>
-              <Link to="/login" className="btn-outline">Sign In</Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    navigate('/login', { replace: true });
+    return null;
   }
 
   return (

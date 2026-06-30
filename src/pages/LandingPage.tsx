@@ -177,7 +177,7 @@ export default function LandingPage() {
               <Link to="/services" className="btn-primary text-lg px-8 py-4">
                 Explore Services <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
-              <Link to="/services/ask-an-aussie" className="btn-outline border-white text-white hover:bg-white/10 text-lg px-8 py-4">
+              <Link to="/book/ask-an-aussie" className="btn-outline border-white text-white hover:bg-white/10 text-lg px-8 py-4">
                 Book a Consultation
               </Link>
             </div>

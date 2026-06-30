@@ -12,7 +12,8 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to="/dashboard" replace />;
+  const redirect = sessionStorage.getItem('postAuthRedirect');
+  if (user) return <Navigate to={redirect || '/dashboard'} replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

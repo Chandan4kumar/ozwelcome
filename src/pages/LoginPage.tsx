@@ -3,6 +3,19 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { MapPin, LogIn, AlertCircle } from 'lucide-react';
 
+/** Validate that a redirect URL is safe (only internal paths) */
+function isSafeRedirect(url: string | null): boolean {
+  if (!url) return false;
+  try {
+    // Only allow relative paths or same-origin absolute URLs
+    if (url.startsWith('/')) return true;
+    const parsed = new URL(url);
+    return parsed.origin === window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
 export default function LoginPage() {
   const { user, signIn } = useAuth();
   const navigate = useNavigate();
@@ -12,7 +25,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const redirect = sessionStorage.getItem('postAuthRedirect');
-  if (user) return <Navigate to={redirect || '/dashboard'} replace />;
+  if (user) return <Navigate to={isSafeRedirect(redirect) ? redirect! : '/dashboard'} replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +40,11 @@ export default function LoginPage() {
       const savedRedirect = sessionStorage.getItem('postAuthRedirect');
       if (savedRedirect) {
         sessionStorage.removeItem('postAuthRedirect');
-        navigate(savedRedirect);
+      }
+      if (isSafeRedirect(savedRedirect)) {
+        navigate(savedRedirect!);
+      } else {
+        navigate('/dashboard');
       }
     }
   };
