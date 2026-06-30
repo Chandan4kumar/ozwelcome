@@ -65,11 +65,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Notification failure shouldn't block signup
         }
       })();
-    }
 
-    // Prevent auto-login after signup by signing out immediately
-    if (!error && data.session) {
-      await supabase.auth.signOut();
+      // Send verification email via our edge function (fire and forget)
+      (async () => {
+        try {
+          await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-verification-email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({
+              email,
+              fullName: name,
+            }),
+          });
+        } catch {
+          // Email send failure shouldn't block signup
+        }
+      })();
     }
 
     return { error: error?.message ?? null, needsConfirmation: true };

@@ -51,15 +51,15 @@ export default function AuthCallbackPage() {
     handleCallback();
   }, [navigate]);
 
-  const handleContinue = () => {
-    const saved = sessionStorage.getItem('postAuthRedirect');
-    if (saved) {
-      sessionStorage.removeItem('postAuthRedirect');
-      navigate(saved);
-    } else {
-      navigate('/dashboard');
+  // Auto-redirect to login on success after a short delay
+  useEffect(() => {
+    if (status === 'success') {
+      const timer = setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [status, navigate]);
 
   return (
     <div className="pt-16 min-h-screen bg-gradient-to-br from-sand-50 to-white flex items-center justify-center py-12">
@@ -89,12 +89,7 @@ export default function AuthCallbackPage() {
               </div>
               <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Email Confirmed!</h2>
               <p className="text-sand-600 mb-6">{message}</p>
-              <button
-                onClick={handleContinue}
-                className="btn-primary"
-              >
-                Continue
-              </button>
+              <p className="text-sm text-sand-500 mb-4">Redirecting to login in a few seconds...</p>
             </>
           )}
 

@@ -46,9 +46,6 @@ export default function SignupPage() {
             <h2 className="font-display text-2xl font-bold text-sand-900 mb-2">Account Created!</h2>
             <p className="text-sand-600 mb-4">We've sent a confirmation link to <strong className="text-sand-800">{email}</strong>.</p>
             <p className="text-sm text-sand-500 mb-6">Click the link in the email to verify your account, then log in with your credentials.</p>
-            <Link to="/login" className="btn-primary">
-              Go to Login
-            </Link>
           </div>
         </div>
       </div>
